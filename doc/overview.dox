@@ -1,0 +1,94 @@
+/**
+@mainpage odbc-cpp-wrapper
+
+@section Introduction
+
+odbc-cpp-wrapper is an object-oriented C++-wrapper of the ODBC API. It takes
+care of
+ - managing the lifetime of ODBC resources,
+ - allocating and managing resources needed for ODBC operations and
+ - converting ODBC errors to exceptions and throwing them.
+
+The odbc-cpp-wrapper API attempts to make usage of ODBC as simple as possible.
+The API was designed to make wrong usage almost impossible and to ensure proper
+object lifetime management.
+
+odbc-cpp-wrapper was originally developed for exchanging spatial data with
+databases. It focuses on batch operations of variable-sized data, which is not
+very well supported by other ODBC wrappers.
+
+The following code gives an example how working with odbc-cpp-wrapper looks
+like. It connects to a database, batch inserts two rows and executes a query.
+
+@code{.cpp}
+ 
+#include <iostream>
+#include <odbc/Connection.h>
+#include <odbc/Environment.h>
+#include <odbc/Exception.h>
+#include <odbc/PreparedStatement.h>
+#include <odbc/ResultSet.h>
+
+int main()
+{
+    try
+    {
+        odbc::EnvironmentRef env = odbc::Environment::create();
+
+        odbc::ConnectionRef conn = env->createConnection();
+        conn->connect("DSN", "user", "pass");
+        conn->setAutoCommit(false);
+
+        odbc::PreparedStatementRef psInsert =
+            conn->prepareStatement("INSERT INTO TAB (ID, DATA) VALUES (?, ?)");
+        psInsert->setInt(1, 101);
+        psInsert->setCString(2, "One hundred one");
+        psInsert->addBatch();
+        psInsert->setInt(1, 102);
+        psInsert->setCString(2, "One hundred two");
+        psInsert->addBatch();
+        psInsert->executeBatch();
+        conn->commit();
+
+        odbc::PreparedStatementRef psSelect =
+            conn->prepareStatement("SELECT ID, DATA FROM TAB WHERE ID > ?");
+        psSelect->setInt(1, 100);
+        odbc::ResultSetRef rs = psSelect->executeQuery();
+        while (rs->next())
+        {
+            std::cout << rs->getInt(1) << ", " << rs->getString(2) << std::endl;
+        }
+    }
+    catch (const odbc::Exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+}
+@endcode
+
+@section Concepts
+
+odbc-cpp-wrapper wraps ODBC handles in reference counted objects and wraps these
+objects in odbc::Reference objects that take care of maintaining the reference
+count similar to C++'s shared_ptr. All objects depending on other objects will
+hold a reference to the object they depend on, e.g. a odbc::Connection object
+holds a reference to the odbc::Environment object. This relieves library users
+from the need to manage the lifetime of the handles themselves and avoids
+resource leaks, dangling handles and double frees.
+
+The wrapping classes offer the functionality that can be executed on the handles
+via member functions. The most important wrapping classes are
+ - odbc::Environment
+ - odbc::Connection
+ - odbc::Statement
+ - odbc::PreparedStatement
+ - odbc::ResultSet
+ - odbc::Exception
+
+As C++'s primitive types cannot represent NULL values, they are wrapped in the
+odbc::Nullable class. These nullable types are widely used in the
+odbc::PreparedStatement and the odbc::ResultSet class.
+ 
+If an ODBC call fails with an error, the library will convert the error to an
+odbc::Exception object and throw that object.
+*/
