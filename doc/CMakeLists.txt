@@ -1,4 +1,3 @@
-# Infrastructure builds an ppc64le hang when searching for Doxygen
 FIND_PACKAGE(Doxygen)
 IF (DOXYGEN_FOUND)
 
