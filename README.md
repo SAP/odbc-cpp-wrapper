@@ -84,7 +84,7 @@ https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html for detai
 
 #### Visual Studio 2015 and later
 
-- Generate a Vistual Studio solution
+- Generate a Visual Studio solution
     ```
     cmake ..
     ```
