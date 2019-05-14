@@ -52,7 +52,7 @@ public:
      *         (ODBC 3.0)
      *     18. Nullability as "NO" or "YES" string (ODBC 3.0)
      *
-     * This functions uses the ODBC function SQLColumns. Refer to its
+     * This function uses the ODBC function SQLColumns. Refer to its
      * documentation for further details on the data in the ResultSet object.
      *
      * @param catalogName  A string indicating the catalog name.
@@ -63,6 +63,37 @@ public:
      *                     table description.
      */
     ResultSetRef getColumns(
+        const char* catalogName,
+        const char* schemaName,
+        const char* tableName,
+        const char* columnName);
+
+    /**
+     * Retrieves a list of columns and associated privileges for the specified
+     * table.
+     *
+     * The list of columns is returned as a ResultSet object, in which each
+     * returned row has the following columns:
+     *     1. Catalog name
+     *     2. Schema name
+     *     3. Table name
+     *     4. Column name
+     *     5. Grantor
+     *     6. Grantee
+     *     7. Privilege
+     *     8. Grantable
+     *
+     * This function uses the ODBC function SQLColumnPrivileges. Refer to its
+     * documentation for further details on the data in the ResultSet object.
+     *
+     * @param catalogName  A string indicating the catalog name.
+     * @param schemaName   A string search pattern for schema names.
+     * @param tableName    A string search pattern for table names.
+     * @param columnName   A string search pattern for column names.
+     * @return             Returns a ResultSet object containing the requested
+     *                     table description.
+     */
+    ResultSetRef getColumnPrivileges(
         const char* catalogName,
         const char* schemaName,
         const char* tableName,
@@ -106,7 +137,7 @@ public:
      *     4. Table type
      *     5. Remarks
      *
-     * This functions uses the ODBC function SQLTables. Refer to its
+     * This function uses the ODBC function SQLTables. Refer to its
      * documentation for further details on the data in the ResultSet object.
      *
      * @param catalogName  A string indicating the catalog name.
@@ -155,7 +186,7 @@ public:
      *     18. The radix used by a numeric type.
      *     19. Interval leading precision.
      *
-     * This functions uses the ODBC function SQLGetTypeInfo. Refer to its
+     * This function uses the ODBC function SQLGetTypeInfo. Refer to its
      * documentation for further details on the data in the ResultSet object.
      *
      * @return      Returns a ResultSet object containing the requested data
