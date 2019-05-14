@@ -54,7 +54,7 @@ vector<DataSourceInformation> Environment::getDataSources(DSNType dsnType)
     descBuf.resize(256);
     SQLSMALLINT nameLen;
     SQLSMALLINT descLen;
-    SQLUSMALLINT direction;
+    SQLUSMALLINT direction = SQL_FETCH_FIRST;
 
     switch (dsnType)
     {
