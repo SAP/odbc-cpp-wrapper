@@ -54,7 +54,7 @@ vector<DataSourceInformation> Environment::getDataSources(DSNType dsnType)
     descBuf.resize(256);
     SQLSMALLINT nameLen;
     SQLSMALLINT descLen;
-    SQLUSMALLINT direction = SQL_FETCH_FIRST;
+    SQLUSMALLINT direction;
 
     switch (dsnType)
     {
@@ -67,6 +67,8 @@ vector<DataSourceInformation> Environment::getDataSources(DSNType dsnType)
     case DSNType::USER:
         direction = SQL_FETCH_FIRST_USER;
         break;
+    default:
+        ODBC_FAIL("Unknown DSN type.");
     }
 
     for (;;)
