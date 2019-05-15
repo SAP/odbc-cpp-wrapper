@@ -87,11 +87,11 @@ public:
      * documentation for further details on the data in the ResultSet object.
      *
      * @param catalogName  A string indicating the catalog name.
-     * @param schemaName   A string search pattern for schema names.
-     * @param tableName    A string search pattern for table names.
+     * @param schemaName   A string indicating the schema name.
+     * @param tableName    A string indicating the table name.
      * @param columnName   A string search pattern for column names.
      * @return             Returns a ResultSet object containing the requested
-     *                     table description.
+     *                     information about privileges.
      */
     ResultSetRef getColumnPrivileges(
         const char* catalogName,
