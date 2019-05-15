@@ -43,6 +43,34 @@ ResultSetRef DatabaseMetaData::getColumns(const char* catalogName,
     return ret;
 }
 //------------------------------------------------------------------------------
+ResultSetRef DatabaseMetaData::getColumnPrivileges(const char* catalogName,
+    const char* schemaName, const char* tableName, const char* columnName)
+{
+    size_t catalogLen = catalogName ? strlen(catalogName) : 0;
+    size_t schemaLen = schemaName ? strlen(schemaName) : 0;
+    size_t tableLen = tableName ? strlen(tableName) : 0;
+    size_t columnLen = columnName ? strlen(columnName) : 0;
+
+    size_t maxLen = (1 << 8 * sizeof(SQLSMALLINT)) - 1;
+    if (catalogLen > maxLen)
+        throw Exception("The catalog name is too long");
+    if (schemaLen > maxLen)
+        throw Exception("The schema name is too long");
+    if (tableLen > maxLen)
+        throw Exception("The table name is too long");
+    if (columnLen > maxLen)
+        throw Exception("The column name is too long");
+
+    StatementRef stmt = parent_->createStatement();
+    ResultSetRef ret(new ResultSet(stmt.get()));
+    EXEC_STMT(SQLColumnPrivilegesA, stmt->hstmt_,
+        (SQLCHAR*)catalogName, (SQLSMALLINT)catalogLen,
+        (SQLCHAR*)schemaName, (SQLSMALLINT)schemaLen,
+        (SQLCHAR*)tableName, (SQLSMALLINT)tableLen,
+        (SQLCHAR*)columnName, (SQLSMALLINT)columnLen);
+    return ret;
+}
+//------------------------------------------------------------------------------
 ResultSetRef DatabaseMetaData::getPrimaryKeys(const char* catalogName,
     const char* schemaName, const char* tableName)
 {

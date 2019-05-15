@@ -67,6 +67,8 @@ vector<DataSourceInformation> Environment::getDataSources(DSNType dsnType)
     case DSNType::USER:
         direction = SQL_FETCH_FIRST_USER;
         break;
+    default:
+        ODBC_FAIL("Unknown DSN type.");
     }
 
     for (;;)
