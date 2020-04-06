@@ -32,6 +32,13 @@ public:
     void execute(const char* sql);
 
     /**
+     * Executes the given SQL statement.
+     *
+     * @param sql  The SQL statement.
+     */
+    void execute(const char16_t* sql);
+
+    /**
      * Executes the given SQL statement and returns a ResultSet object.
      *
      * @param sql  The SQL statement.
@@ -39,6 +46,15 @@ public:
      *             by the given SQL statement.
      */
     ResultSetRef executeQuery(const char* sql);
+
+    /**
+     * Executes the given SQL statement and returns a ResultSet object.
+     *
+     * @param sql  The SQL statement.
+     * @return     Returns a ResultSet object that contains the data produced
+     *             by the given SQL statement.
+     */
+    ResultSetRef executeQuery(const char16_t* sql);
 };
 //------------------------------------------------------------------------------
 } // namespace odbc

@@ -239,6 +239,16 @@ PreparedStatementRef Connection::prepareStatement(const char* sql)
     return ret;
 }
 //------------------------------------------------------------------------------
+PreparedStatementRef Connection::prepareStatement(const char16_t* sql)
+{
+    SQLHANDLE hstmt;
+    PreparedStatementRef ret(new PreparedStatement(this));
+    SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc_, &hstmt);
+    Exception::checkForError(rc, SQL_HANDLE_DBC, hdbc_);
+    ret->setHandleAndQuery(hstmt, sql);
+    return ret;
+}
+//------------------------------------------------------------------------------
 DatabaseMetaDataRef Connection::getDatabaseMetaData()
 {
     DatabaseMetaDataRef ret(new DatabaseMetaData(this));

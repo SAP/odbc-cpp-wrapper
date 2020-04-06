@@ -37,6 +37,19 @@ void PreparedStatement::setHandleAndQuery(void* hstmt, const char* query)
     batch_.reset(new Batch(parameterData_));
 }
 //------------------------------------------------------------------------------
+void PreparedStatement::setHandleAndQuery(void* hstmt, const char16_t* query)
+{
+    hstmt_ = hstmt;
+
+    EXEC_STMT(SQLPrepareW, hstmt, (SQLWCHAR*)query, SQL_NTS);
+
+    SQLSMALLINT count;
+    EXEC_STMT(SQLNumParams, hstmt_, &count);
+    parameterData_.resize(count);
+
+    batch_.reset(new Batch(parameterData_));
+}
+//------------------------------------------------------------------------------
 ParameterMetaDataRef PreparedStatement::getParameterMetaData()
 {
     ParameterMetaDataRef ret(new ParameterMetaData(this));
