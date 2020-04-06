@@ -30,6 +30,8 @@ public:
 private:
     void setHandleAndQuery(void* hstmt, const char* query);
 
+    void setHandleAndQuery(void* hstmt, const char16_t* query);
+
 public:
     /**
      * Retrieves the number, types and properties of the parameters.

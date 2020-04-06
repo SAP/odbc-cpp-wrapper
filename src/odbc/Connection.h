@@ -294,6 +294,15 @@ public:
     PreparedStatementRef prepareStatement(const char* sql);
 
     /**
+     * Creates a new PreparedStatement object.
+     *
+     * @param sql  The SQL statement to prepare. Use '?' for placeholders.
+     * @return     Returns a reference to the newly created PreparedStatement
+     *             object.
+     */
+    PreparedStatementRef prepareStatement(const char16_t* sql);
+
+    /**
      * Retrieves metadata information of the database.
      *
      * @return  Returns a reference to the DatabaseMetaData object.
