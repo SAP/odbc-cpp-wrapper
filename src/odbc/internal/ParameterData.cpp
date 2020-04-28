@@ -1,3 +1,4 @@
+#include <new>
 #include <odbc/internal/Odbc.h>
 #include <odbc/internal/ParameterData.h>
 #include <cassert>
