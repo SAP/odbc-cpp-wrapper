@@ -13,6 +13,8 @@ namespace odbc {
 class ODBC_EXPORT ResultSet : public RefCounted
 {
     friend class DatabaseMetaData;
+    friend class DatabaseMetaDataBase;
+    friend class DatabaseMetaDataUnicode;
     friend class PreparedStatement;
     friend class Statement;
 
@@ -54,6 +56,15 @@ public:
      * @return  Returns a ResultSetMetaData object.
      */
     ResultSetMetaDataRef getMetaData();
+
+    /**
+     * Retrieves a ResultSetMetaDataUnicode object that contains information
+     * about the number, types and properties of the columns in this ResultSet
+     * object.
+     *
+     * @return  Returns a ResultSetMetaDataUnicode object.
+     */
+    ResultSetMetaDataUnicodeRef getMetaDataUnicode();
 
     /**
      * Retrieves the value of the specified column in the current row as
