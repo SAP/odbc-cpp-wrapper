@@ -1,6 +1,7 @@
 #include <limits>
 #include <odbc/Connection.h>
 #include <odbc/DatabaseMetaData.h>
+#include <odbc/DatabaseMetaDataUnicode.h>
 #include <odbc/Environment.h>
 #include <odbc/Exception.h>
 #include <odbc/PreparedStatement.h>
@@ -252,6 +253,12 @@ PreparedStatementRef Connection::prepareStatement(const char16_t* sql)
 DatabaseMetaDataRef Connection::getDatabaseMetaData()
 {
     DatabaseMetaDataRef ret(new DatabaseMetaData(this));
+    return ret;
+}
+//------------------------------------------------------------------------------
+DatabaseMetaDataUnicodeRef Connection::getDatabaseMetaDataUnicode()
+{
+    DatabaseMetaDataUnicodeRef ret(new DatabaseMetaDataUnicode(this));
     return ret;
 }
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-#ifndef ODBC_DATABASEMETADATA_H_INCLUDED
-#define ODBC_DATABASEMETADATA_H_INCLUDED
+#ifndef ODBC_DATABASEMETADATAUNICODE_H_INCLUDED
+#define ODBC_DATABASEMETADATAUNICODE_H_INCLUDED
 //------------------------------------------------------------------------------
 #include <string>
 #include <odbc/Config.h>
@@ -12,19 +12,19 @@ namespace odbc {
 /**
  * Provides information about the database.
  *
- * A DatabaseMetaData object can be created using
- * Connection::getDatabaseMetaData().
+ * A DatabaseMetaDataUnicode object can be created using
+ * Connection::getDatabaseMetaDataUnicode().
  *
  * Most functions provide only a rudementary description of the data that is
  * returned. Refer to the ODBC documentation and your ODBC driver documentation
  * for further details.
  */
-class ODBC_EXPORT DatabaseMetaData : public DatabaseMetaDataBase
+class ODBC_EXPORT DatabaseMetaDataUnicode : public DatabaseMetaDataBase
 {
     friend class Connection;
 
 private:
-    DatabaseMetaData(Connection* parent);
+    DatabaseMetaDataUnicode(Connection* parent);
 
 public:
     /**
@@ -64,10 +64,10 @@ public:
      *                     table description.
      */
     ResultSetRef getColumns(
-        const char* catalogName,
-        const char* schemaName,
-        const char* tableName,
-        const char* columnName);
+        const char16_t* catalogName,
+        const char16_t* schemaName,
+        const char16_t* tableName,
+        const char16_t* columnName);
 
     /**
      * Retrieves a list of columns and associated privileges for the specified
@@ -95,10 +95,10 @@ public:
      *                     information about privileges.
      */
     ResultSetRef getColumnPrivileges(
-        const char* catalogName,
-        const char* schemaName,
-        const char* tableName,
-        const char* columnName);
+        const char16_t* catalogName,
+        const char16_t* schemaName,
+        const char16_t* tableName,
+        const char16_t* columnName);
 
     /**
      * Retrieves a list of primary keys in the specified table.
@@ -122,9 +122,9 @@ public:
      *                     table description.
      */
     ResultSetRef getPrimaryKeys(
-        const char* catalogName,
-        const char* schemaName,
-        const char* tableName);
+        const char16_t* catalogName,
+        const char16_t* schemaName,
+        const char16_t* tableName);
 
     /**
      * Retrieves a description of the tables that are available in the connected
@@ -154,10 +154,10 @@ public:
      *                     table description.
      */
     ResultSetRef getTables(
-        const char* catalogName,
-        const char* schemaName,
-        const char* tableName,
-        const char* tableType);
+        const char16_t* catalogName,
+        const char16_t* schemaName,
+        const char16_t* tableName,
+        const char16_t* tableType);
 
     /**
      * Retrieves information about all data types.
@@ -211,56 +211,59 @@ public:
      *
      * @return  Returns the name of the data source.
      */
-    std::string getDataSourceName();
+    std::u16string getDataSourceName();
 
     /**
      * Retrieves the current database in use.
      *
      * @return  Returns the current database in use.
      */
-    std::string getDatabaseName();
+    std::u16string getDatabaseName();
 
     /**
      * Retrieves the name of the DBMS system.
      *
      * @return  Returns the name of the DBMS system.
      */
-    std::string getDBMSName();
+    std::u16string getDBMSName();
 
     /**
      * Retrieves the version of the DBMS system.
      *
      * @return  Returns the version of the DBMS system.
      */
-    std::string getDBMSVersion();
+    std::u16string getDBMSVersion();
 
     /**
      * Retrieves the name of the ODBC driver.
      *
      * @return  Returns the name of the ODBC driver.
      */
-    std::string getDriverName();
+    std::u16string getDriverName();
 
     /**
      * Retrieves the version of the ODBC driver.
      *
      * @return  Returns the version of the ODBC driver.
      */
-    std::string getDriverVersion();
+    std::u16string getDriverVersion();
 
     /**
      * Retrieves the server name.
      *
      * @return  Returns the server name.
      */
-    std::string getServerName();
+    std::u16string getServerName();
 
     /**
      * Retrieves the name used in the database.
      *
      * @return  Returns the name used in the database.
      */
-    std::string getUserName();
+    std::u16string getUserName();
+
+private:
+    std::u16string getStringTypeInfoW(unsigned short typeInfo);
 };
 //------------------------------------------------------------------------------
 } // namespace odbc

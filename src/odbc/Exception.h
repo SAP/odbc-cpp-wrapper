@@ -18,6 +18,8 @@ private:
     friend class Batch;
     friend class Connection;
     friend class DatabaseMetaData;
+    friend class DatabaseMetaDataBase;
+    friend class DatabaseMetaDataUnicode;
     friend class date;
     friend class decimal;
     friend class Environment;
@@ -25,6 +27,8 @@ private:
     friend class PreparedStatement;
     friend class ResultSet;
     friend class ResultSetMetaData;
+    friend class ResultSetMetaDataBase;
+    friend class ResultSetMetaDataUnicode;
     friend class Statement;
     friend class StatementBase;
     friend class time;

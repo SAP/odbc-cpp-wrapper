@@ -234,6 +234,14 @@ public:
     ResultSetMetaDataRef getMetaData();
 
     /**
+     * Retrieves a ResultSetMetaDataUnicode object that contains information
+     * about a ResultSet object returned by executeQuery method.
+     *
+     * @return  Returns a ResultSetMetaDataUnicode object.
+     */
+    ResultSetMetaDataUnicodeRef getMetaDataUnicode();
+
+    /**
      * Executes the SQL query of this PreparedStatement object and returns a
      * ResultSet object.
      *

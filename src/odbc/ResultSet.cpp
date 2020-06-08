@@ -4,6 +4,7 @@
 #include <odbc/Exception.h>
 #include <odbc/ResultSet.h>
 #include <odbc/ResultSetMetaData.h>
+#include <odbc/ResultSetMetaDataUnicode.h>
 #include <odbc/Statement.h>
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
@@ -39,6 +40,13 @@ void ResultSet::close()
 ResultSetMetaDataRef ResultSet::getMetaData()
 {
     ResultSetMetaDataRef ret(new ResultSetMetaData(parent_.get()));
+    return ret;
+}
+//------------------------------------------------------------------------------
+ResultSetMetaDataUnicodeRef ResultSet::getMetaDataUnicode()
+{
+    ResultSetMetaDataUnicodeRef ret(
+        new ResultSetMetaDataUnicode(parent_.get()));
     return ret;
 }
 //------------------------------------------------------------------------------

@@ -21,7 +21,8 @@ namespace odbc {
 class ODBC_EXPORT Connection : public RefCounted
 {
     friend class Environment;
-    friend class DatabaseMetaData;
+    friend class DatabaseMetaDataBase;
+    friend class DatabaseMetaDataUnicode;
 
 private:
     Connection(Environment* parent);
@@ -308,6 +309,13 @@ public:
      * @return  Returns a reference to the DatabaseMetaData object.
      */
     DatabaseMetaDataRef getDatabaseMetaData();
+
+    /**
+     * Retrieves metadata information of the database.
+     *
+     * @return  Returns a reference to the DatabaseMetaDataUnicode object.
+     */
+    DatabaseMetaDataUnicodeRef getDatabaseMetaDataUnicode();
 
 private:
     EnvironmentRef parent_;

@@ -12,10 +12,14 @@ namespace odbc {
 class ODBC_EXPORT StatementBase : public RefCounted
 {
     friend class DatabaseMetaData;
+    friend class DatabaseMetaDataBase;
+    friend class DatabaseMetaDataUnicode;
     friend class ParameterMetaData;
     friend class PreparedStatement;
     friend class ResultSet;
     friend class ResultSetMetaData;
+    friend class ResultSetMetaDataBase;
+    friend class ResultSetMetaDataUnicode;
     friend class Statement;
 
 private:

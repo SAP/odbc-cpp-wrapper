@@ -5,6 +5,7 @@
 #include <odbc/PreparedStatement.h>
 #include <odbc/ResultSet.h>
 #include <odbc/ResultSetMetaData.h>
+#include <odbc/ResultSetMetaDataUnicode.h>
 #include <odbc/internal/Batch.h>
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
@@ -279,6 +280,12 @@ void PreparedStatement::clearParameters()
 ResultSetMetaDataRef PreparedStatement::getMetaData()
 {
     ResultSetMetaDataRef ret(new ResultSetMetaData(this));
+    return ret;
+}
+//------------------------------------------------------------------------------
+ResultSetMetaDataUnicodeRef PreparedStatement::getMetaDataUnicode()
+{
+    ResultSetMetaDataUnicodeRef ret(new ResultSetMetaDataUnicode(this));
     return ret;
 }
 //------------------------------------------------------------------------------

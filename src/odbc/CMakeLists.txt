@@ -3,6 +3,8 @@ SET(public_headers
     Config.h
     Connection.h
     DatabaseMetaData.h
+    DatabaseMetaDataBase.h
+    DatabaseMetaDataUnicode.h
     Environment.h
     Exception.h
     Forwards.h
@@ -11,6 +13,8 @@ SET(public_headers
     RefCounted.h
     ResultSet.h
     ResultSetMetaData.h
+    ResultSetMetaDataBase.h
+    ResultSetMetaDataUnicode.h
     Statement.h
     StatementBase.h
     Types.h
@@ -21,6 +25,8 @@ SET(public_headers
 SET(odbccpp_sources
     Connection.cpp
     DatabaseMetaData.cpp
+    DatabaseMetaDataBase.cpp
+    DatabaseMetaDataUnicode.cpp
     Environment.cpp
     Exception.cpp
     ParameterMetaData.cpp
@@ -28,6 +34,8 @@ SET(odbccpp_sources
     RefCounted.cpp
     ResultSet.cpp
     ResultSetMetaData.cpp
+    ResultSetMetaDataBase.cpp
+    ResultSetMetaDataUnicode.cpp
     Statement.cpp
     StatementBase.cpp
     Types.cpp
@@ -60,10 +68,10 @@ TARGET_COMPILE_DEFINITIONS(odbccpp
 TARGET_LINK_LIBRARIES(odbccpp
     PUBLIC
         ${ODBC_LIBRARIES}
-)        
+)
 
 SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
-        
+
 # Installation
 INSTALL(TARGETS odbccpp_static DESTINATION lib)
 INSTALL(TARGETS odbccpp DESTINATION lib)
