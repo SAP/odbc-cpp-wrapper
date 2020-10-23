@@ -412,8 +412,8 @@ timestamp::timestamp(int year, int month, int day, int hour, int minute,
 //------------------------------------------------------------------------------
 string timestamp::toString() const
 {
-    char buffer[32];
-    snprintf(buffer, 32, "%04d-%02d-%02d %02d:%02d:%02d.%03d",
+    char buffer[40];
+    snprintf(buffer, 40, "%04d-%02d-%02d %02d:%02d:%02d.%03d",
         year_, month_, day_, hour_, minute_, second_, milliseconds_);
     return string(buffer);
 }
