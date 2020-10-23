@@ -154,10 +154,16 @@ void PreparedStatement::setCString(unsigned short paramIndex, const char* s,
     std::size_t len)
 {
     verifyValidParamIndex(paramIndex);
+    ParameterData& pd = parameterData_[paramIndex - 1];
     if (s == nullptr)
-        parameterData_[paramIndex - 1].setNull(SQL_C_CHAR);
+    {
+        pd.setNull(SQL_C_CHAR);
+    }
     else
-        parameterData_[paramIndex - 1].setValue(SQL_C_CHAR, s, len);
+    {
+        pd.setValue(SQL_C_CHAR, s, len);
+        pd.setColumnSize(len);
+    }
 }
 //------------------------------------------------------------------------------
 void PreparedStatement::setNString(unsigned short paramIndex,
@@ -182,11 +188,16 @@ void PreparedStatement::setNCString(unsigned short paramIndex,
     const char16_t* s, std::size_t len)
 {
     verifyValidParamIndex(paramIndex);
+    ParameterData& pd = parameterData_[paramIndex - 1];
     if (s == nullptr)
-        parameterData_[paramIndex - 1].setNull(SQL_C_WCHAR);
+    {
+        pd.setNull(SQL_C_WCHAR);
+    }
     else
-        parameterData_[paramIndex - 1].setValue(
-            SQL_C_WCHAR, s, len*sizeof(char16_t));
+    {
+        pd.setValue(SQL_C_WCHAR, s, len*sizeof(char16_t));
+        pd.setColumnSize(len);
+    }
 }
 //------------------------------------------------------------------------------
 void PreparedStatement::setBinary(unsigned short paramIndex,
@@ -202,10 +213,16 @@ void PreparedStatement::setBytes(unsigned short paramIndex, const void* data,
     size_t size)
 {
     verifyValidParamIndex(paramIndex);
+    ParameterData& pd = parameterData_[paramIndex - 1];
     if (data == nullptr)
-        parameterData_[paramIndex - 1].setNull(SQL_C_BINARY);
+    {
+        pd.setNull(SQL_C_BINARY);
+    }
     else
-        parameterData_[paramIndex - 1].setValue(SQL_C_BINARY, data, size);
+    {
+        pd.setValue(SQL_C_BINARY, data, size);
+        pd.setColumnSize(size);
+    }
 }
 //------------------------------------------------------------------------------
 void PreparedStatement::setDate(unsigned short paramIndex, const Date& value)
