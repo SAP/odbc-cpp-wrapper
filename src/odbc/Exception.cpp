@@ -13,7 +13,7 @@ bool appendRecord(short handleType, void* handle, SQLSMALLINT recNumber,
     SQLINTEGER nativeError;
     SQLCHAR messageText[2048];
     SQLSMALLINT textLength;
-    SQLRETURN rc = SQLGetDiagRec(handleType, handle, recNumber, sqlState,
+    SQLRETURN rc = SQLGetDiagRecA(handleType, handle, recNumber, sqlState,
         &nativeError, messageText, sizeof(messageText)/sizeof(SQLCHAR),
         &textLength);
     switch (rc)
