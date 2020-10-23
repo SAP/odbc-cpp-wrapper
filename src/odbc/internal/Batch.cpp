@@ -323,6 +323,13 @@ void Batch::checkAndCompleteValueTypes()
                 param.getColumnSize() << ", " << param.getDecimalDigits() <<
                 ").");
         }
+
+        // Update column size for types with variable size
+        if (TypeInfo::getSizeOfValueFromValueType(param.getValueType()) == 0)
+        {
+            valTypeInfo.columnSize =
+                max(valTypeInfo.columnSize, param.getColumnSize());
+        }
     }
 }
 //------------------------------------------------------------------------------

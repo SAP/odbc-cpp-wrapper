@@ -119,7 +119,7 @@ public:
      *
      * @return  The column size.
      */
-    std::uint8_t getColumnSize() const { return columnSize_; }
+    std::size_t getColumnSize() const { return columnSize_; }
 
     /**
      * Sets the column size of this parameter. If the parameter type is
@@ -132,7 +132,7 @@ public:
      *
      * @param value  The column size.
      */
-    void setColumnSize(std::uint8_t value) { columnSize_ = value; }
+    void setColumnSize(std::size_t value) { columnSize_ = value; }
 
     /**
      * Returns the number of decimal digits of this parameter. If the parameter
@@ -143,7 +143,7 @@ public:
      *
      * @return  The number of decimal digits.
      */
-    std::uint8_t getDecimalDigits() const { return decimalDigits_; }
+    std::int16_t getDecimalDigits() const { return decimalDigits_; }
 
     /**
      * Sets the number of decimal digits of this parameter. If the parameter
@@ -154,7 +154,7 @@ public:
      *
      * @param value  The number of decimal digits.
      */
-    void setDecimalDigits(std::uint8_t value) { decimalDigits_ = value; }
+    void setDecimalDigits(std::int16_t value) { decimalDigits_ = value; }
 
     /**
      * Checks whether the value is NULL.
@@ -265,8 +265,8 @@ private:
     //    NORMAL_HEAP_OWNING or NORMAL_HEAP_NOT_OWNING
     State state_;
     std::int16_t valueType_;
-    std::uint8_t columnSize_;
-    std::uint8_t decimalDigits_;
+    std::size_t columnSize_;
+    std::int16_t decimalDigits_;
     std::size_t size_;
     union
     {
