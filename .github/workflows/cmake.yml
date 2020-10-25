@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install gtest
+      run: cd ~ && git clone https://github.com/google/googletest.git && cd googletest && git checkout -b release-1.10.0 tags/release-1.10.0 && mkdir build && cd build && cmake .. && make && sudo make install
+
     - uses: actions/checkout@v2
 
     - name: Create Build Environment
@@ -37,3 +40,10 @@ jobs:
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      # Execute tests defined by the CMake configuration.  
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C $BUILD_TYPE
