@@ -186,12 +186,18 @@ void Batch::bindBlockParameters(const char* blockData, size_t numRows,
 
     for (size_t i = 0; i < valueTypeInfos_.size(); ++i)
     {
+        SQLSMALLINT dataType;
+        SQLULEN parameterSize;
+        SQLSMALLINT decimalDigits;
+        SQLSMALLINT nullable;
+        EXEC_STMT(SQLDescribeParam, hstmt, (SQLUSMALLINT)i, &dataType,
+            &parameterSize, &decimalDigits, &nullable);
+
         const ValueTypeInfo& vti = valueTypeInfos_[i];
         SQLLEN* lenInd = (SQLLEN*)(blockData + paramDataOffsets_[i]);
         EXEC_STMT(SQLBindParameter, hstmt, (SQLUSMALLINT)(i + 1),
             SQL_PARAM_INPUT, vti.type,
-            TypeInfo::getParamTypeForValueType(vti.type),
-            vti.columnSize, vti.decimalDigits,
+            dataType, parameterSize, decimalDigits,
             (SQLPOINTER)(lenInd + 1), 0, lenInd);
     }
 }
@@ -273,8 +279,8 @@ void Batch::initialize()
     {
         const ParameterData& param = parameters_[i];
         assert(param.isInitialized());
-        valueTypeInfos_[i] = { param.getValueType(),
-            param.getColumnSize(), param.getDecimalDigits() };
+
+        valueTypeInfos_[i] = { param.getValueType() };
         paramDataOffsets_[i] = rowLength_;
         rowLength_ += sizeof(SQLLEN);
         size_t valueSize =
@@ -302,27 +308,6 @@ void Batch::checkAndCompleteValueTypes()
             << TypeInfo::getValueTypeName(valTypeInfo.type) << ", now it is "
             << TypeInfo::getValueTypeName(
                 param.getValueType()) << ".");
-
-        if (param.getValueType() == SQL_C_NUMERIC)
-        {
-            // columnSize and decimalDigits might not be set during the first
-            // call of addRow method. Therefore, we set their values here.
-            if (valTypeInfo.columnSize == 0)
-            {
-                valTypeInfo.columnSize = param.getColumnSize();
-                valTypeInfo.decimalDigits = param.getDecimalDigits();
-            }
-
-            ODBC_CHECK(
-                param.getColumnSize() == valTypeInfo.columnSize &&
-                param.getDecimalDigits() == valTypeInfo.decimalDigits,
-                "Precision and scale values of parameter " << (i + 1) << " do "
-                "not match the previous values used in the batch. Before it "
-                "was numeric(" << valTypeInfo.columnSize << "," <<
-                valTypeInfo.decimalDigits << "), now it is numeric(" <<
-                param.getColumnSize() << ", " << param.getDecimalDigits() <<
-                ").");
-        }
     }
 }
 //------------------------------------------------------------------------------

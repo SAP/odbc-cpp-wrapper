@@ -11,19 +11,15 @@ using namespace std;
 //------------------------------------------------------------------------------
 namespace odbc {
 //------------------------------------------------------------------------------
-ParameterData::ParameterData()
+ParameterData::ParameterData() noexcept
     : state_(UNINITIALIZED)
     , valueType_(0)
-    , columnSize_(0)
-    , decimalDigits_(0)
 {
 }
 //------------------------------------------------------------------------------
-ParameterData::ParameterData(ParameterData&& other)
+ParameterData::ParameterData(ParameterData&& other) noexcept
     : state_(other.state_)
     , valueType_(other.valueType_)
-    , columnSize_(other.columnSize_)
-    , decimalDigits_(other.decimalDigits_)
     , size_(other.size_)
 {
     switch (state_)
@@ -49,7 +45,7 @@ ParameterData::~ParameterData()
         free(heapData_);
 }
 //------------------------------------------------------------------------------
-ParameterData& ParameterData::operator=(ParameterData&& other)
+ParameterData& ParameterData::operator=(ParameterData&& other) noexcept
 {
     if (this == &other)
         return *this;
@@ -59,8 +55,6 @@ ParameterData& ParameterData::operator=(ParameterData&& other)
 
     state_ = other.state_;
     valueType_ = other.valueType_;
-    columnSize_ = other.columnSize_;
-    decimalDigits_ = other.decimalDigits_;
     size_ = other.size_;
     switch (state_)
     {
@@ -91,8 +85,6 @@ void ParameterData::setValue(int16_t type, const void* value, size_t size)
     else
         setValueOnHeap(value, size);
     valueType_ = type;
-    columnSize_ = 0;
-    decimalDigits_ = 0;
 }
 //------------------------------------------------------------------------------
 void ParameterData::setNull(int16_t type)

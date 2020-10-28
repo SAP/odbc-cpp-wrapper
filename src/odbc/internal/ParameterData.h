@@ -43,7 +43,7 @@ public:
     /**
      * Creates an uninitialized instance.
      */
-    ParameterData();
+    ParameterData() noexcept;
 
     ParameterData(const ParameterData& other) = delete;
 
@@ -53,7 +53,7 @@ public:
      *
      * @param other  Another instance.
      */
-    ParameterData(ParameterData&& other);
+    ParameterData(ParameterData&& other) noexcept;
 
     /**
      * Destructor.
@@ -68,7 +68,7 @@ public:
      * @param other  Another instance.
      * @return       Returns a reference to this instance.
      */
-    ParameterData& operator=(ParameterData&& other);
+    ParameterData& operator=(ParameterData&& other) noexcept;
 
 public:
     /**
@@ -108,55 +108,7 @@ public:
      */
     std::int16_t getValueType() const { return valueType_; }
 
-    /**
-     * Returns the size of the parameter. If the parameter type is SQL_DECIMAL,
-     * SQL_NUMERIC, SQL_FLOAT, SQL_REAL or SQL_DOUBLE the returned value
-     * represents the maximum precision of the corrresponding parameter. If the
-     * parameter type is SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR, SQL_BINARY,
-     * SQL_VARBINARY, SQL_LONGVARBINARY, SQL_TYPE_DATE, SQL_TYPE_TIME or
-     * SQL_TYPE_TIMESTAMP the returned value represents the maximum length of
-     * the corresponding parameter in bytes.
-     *
-     * @return  The column size.
-     */
-    std::uint8_t getColumnSize() const { return columnSize_; }
-
-    /**
-     * Sets the column size of this parameter. If the parameter type is
-     * SQL_DECIMAL, SQL_NUMERIC, SQL_FLOAT, SQL_REAL or SQL_DOUBLE the value
-     * represents the maximum precision of the corrresponding parameter. If the
-     * parameter type is SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR, SQL_BINARY,
-     * SQL_VARBINARY, SQL_LONGVARBINARY, SQL_TYPE_DATE, SQL_TYPE_TIME or
-     * SQL_TYPE_TIMESTAMP the value represents the maximum length of the
-     * corresponding parameter in bytes.
-     *
-     * @param value  The column size.
-     */
-    void setColumnSize(std::uint8_t value) { columnSize_ = value; }
-
-    /**
-     * Returns the number of decimal digits of this parameter. If the parameter
-     * type is SQL_DECIMAL or SQL_NUMERIC the value represents the scale of the
-     * corresponding parameter. If the parameter type is SQL_TYPE_TIME or
-     * SQL_TYPE_TIMESTAMP the value represents the precision of the
-     * corresponding parameter.
-     *
-     * @return  The number of decimal digits.
-     */
-    std::uint8_t getDecimalDigits() const { return decimalDigits_; }
-
-    /**
-     * Sets the number of decimal digits of this parameter. If the parameter
-     * type is SQL_DECIMAL or SQL_NUMERIC the value represents the scale of the
-     * corresponding parameter. If the parameter type is SQL_TYPE_TIME or
-     * SQL_TYPE_TIMESTAMP the value represents the precision of the
-     * corresponding parameter.
-     *
-     * @param value  The number of decimal digits.
-     */
-    void setDecimalDigits(std::uint8_t value) { decimalDigits_ = value; }
-
-    /**
+     /**
      * Checks whether the value is NULL.
      *
      * @return  True if the value is NULL, false otherwise.
@@ -265,8 +217,6 @@ private:
     //    NORMAL_HEAP_OWNING or NORMAL_HEAP_NOT_OWNING
     State state_;
     std::int16_t valueType_;
-    std::uint8_t columnSize_;
-    std::uint8_t decimalDigits_;
     std::size_t size_;
     union
     {

@@ -178,8 +178,6 @@ private:
     struct ValueTypeInfo
     {
         std::int16_t type;
-        std::uint8_t columnSize;
-        std::uint8_t decimalDigits;
     };
 
 private:
