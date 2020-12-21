@@ -30,6 +30,7 @@ void Batch::addRow()
         blockRow_ = 0;
     }
 
+    dataSize_ += rowLength_;
     Block& block = batchBlocks_.back();
     char* dest = block.getData() + rowLength_ * blockRow_;
     for (size_t i = 0; i < parameters_.size(); ++i)
@@ -53,6 +54,7 @@ void Batch::clear()
     // instead in a more sophisticated version.
     batchBlocks_.clear();
     blockRow_ = 0;
+    dataSize_ = 0;
 }
 //------------------------------------------------------------------------------
 void Batch::execute(void* hstmt)
@@ -73,6 +75,11 @@ void Batch::execute(void* hstmt)
     bindBlockParameters(batchBlocks_.back().getData(), blockRow_, hstmt);
     executeBlockBatch(batchBlocks_.back().getData(), blockRow_,
         nextRowInfo, hstmt);
+}
+//------------------------------------------------------------------------------
+size_t Batch::getDataSize() const
+{
+    return dataSize_;
 }
 //------------------------------------------------------------------------------
 void Batch::writeParameter(char* dest, ParameterData& pd)
@@ -108,6 +115,7 @@ void Batch::writeVariableSizeParameter(char* dest, ParameterData& pd)
         memcpy(dest, &data, sizeof(data));
         if (pd.ownsHeapBuffer())
             pd.releaseHeapBufferOwnership();
+        dataSize_ += pd.getSize();
     }
 }
 //------------------------------------------------------------------------------
@@ -268,6 +276,7 @@ void Batch::initialize()
     assert(!parameters_.empty());
     valueTypeInfos_.resize(parameters_.size());
     paramDataOffsets_.resize(parameters_.size());
+    dataSize_ = 0;
     rowLength_ = 0;
     for (size_t i = 0; i < parameters_.size(); ++i)
     {

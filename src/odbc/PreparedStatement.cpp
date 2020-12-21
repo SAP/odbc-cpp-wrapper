@@ -344,6 +344,11 @@ void PreparedStatement::clearBatch()
     batch_->clear();
 }
 //------------------------------------------------------------------------------
+size_t PreparedStatement::getBatchDataSize() const
+{
+    return batch_->getDataSize();
+}
+//------------------------------------------------------------------------------
 void PreparedStatement::bindParameters()
 {
     verifyAllParametersValid();
