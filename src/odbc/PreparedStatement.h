@@ -257,7 +257,7 @@ public:
      * @return  Returns the number of rows affected by an UPDATE, INSERT, or
      *          DELETE statement.
      */
-    size_t executeUpdate();
+    std::size_t executeUpdate();
 
     /**
      * Add the current set of parameters to the batch of commands.
@@ -271,6 +271,13 @@ public:
      * Clears the batch of commands.
      */
     void clearBatch();
+
+    /**
+     * Retrieves the number of bytes required by the batch of commands.
+     *
+     * @return  Returns the number of bytes required by the batch of commands.
+     */
+    std::size_t getBatchDataSize() const;
 
 private:
     void bindParameters();

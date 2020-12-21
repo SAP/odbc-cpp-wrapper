@@ -78,6 +78,13 @@ public:
      */
     void execute(void* hstmt);
 
+    /**
+     * Retrieves the number of bytes required by the batch.
+     *
+     * @return  Returns the number of bytes required by the batch.
+     */
+    std::size_t getDataSize() const;
+
 private:
     void writeParameter(char* dest, ParameterData& pd);
     void writeVariableSizeParameter(char* dest, ParameterData& pd);
@@ -208,6 +215,9 @@ private:
 
     /// The number of rows in the last block (in batchBlocks_.back()).
     std::size_t blockRow_;
+
+    /// The number of bytes required for the batch.
+    std::size_t dataSize_;
 };
 //------------------------------------------------------------------------------
 } // namespace odbc
