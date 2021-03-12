@@ -29,6 +29,38 @@ enum class DSNType
 };
 //------------------------------------------------------------------------------
 /**
+ *  Specifies the type of the index.
+ */
+enum class IndexType
+{
+    /**
+     * All indexes are returned.
+     */
+    ALL,
+    /**
+     * Only unique indexes are returned.
+     */
+    UNIQUE
+};
+//------------------------------------------------------------------------------
+/**
+ *  Specifies the accuracy of the statistics about a single table and
+ *  its indexes.
+ */
+enum class StatisticsAccuracy
+{
+    /**
+     * Requests that the driver unconditionally retrieves the statistics.
+     */
+    ENSURE,
+    /**
+     * Requests that the driver retrieves the CARDINALITY and PAGES only if they
+     * are readily available from the server.
+     */
+    QUICK
+};
+//------------------------------------------------------------------------------
+/**
  *  Specifies the constants that identify whether the column allows NULL values.
  */
 enum class ColumnNullableValue
