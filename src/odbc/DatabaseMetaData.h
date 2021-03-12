@@ -162,6 +162,45 @@ public:
         ColumnNullableValue nullable);
 
     /**
+     * Retrieves the statistics about the specified table and its indexes.
+     *
+     * The list of columns is returned as a ResultSet object, in which each
+     * returned row has the following columns:
+     *     1. Catalog name of the table
+     *     2. Schema name of the table
+     *     3. Table name of the table
+     *     4. Indicates whether the index does not allow duplicate values
+     *     5. The identifier that is used to qualify the index name doing a
+     *        DROP INDEX
+     *     6. Index name
+     *     7. Type of information being returned
+     *     8. Column sequence number in index (starting with 1)
+     *     9. Column name
+     *     10. Sort sequence for the column: "A" for ascending; "D" for
+     *         descending
+     *     11. Cardinality of table or index
+     *     12. Number of pages used to store the index or table
+     *     13. If the index is a filtered index
+     *
+     * This function uses the ODBC function SQLStatistics. Refer to its
+     * documentation for further details on the data in the ResultSet object.
+     *
+     * @param catalogName  A string indicating the catalog name.
+     * @param schemaName   A string indicating the schema name.
+     * @param tableName    A string indicating the table name.
+     * @param indexType    Type of index.
+     * @param accuracy     Indicates the accuracy of the returned statistics.
+     * @return             Returns a ResultSet object containing the statistics
+     *                     about the specified table and its indexes.
+     */
+    ResultSetRef getStatistics(
+        const char* catalogName,
+        const char* schemaName,
+        const char* tableName,
+        IndexType indexType,
+        StatisticsAccuracy accuracy);
+
+    /**
      * Retrieves a description of the tables that are available in the connected
      * database.
      *
