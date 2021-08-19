@@ -1,5 +1,7 @@
 # C++ Wrapper for ODBC
 
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/odbc-cpp-wrapper)](https://api.reuse.software/info/github.com/SAP/odbc-cpp-wrapper)
+
 odbc-cpp-wrapper is an object-oriented C++-wrapper of the ODBC API. It takes
 care of
  - managing the lifetime of ODBC resources,
@@ -186,6 +188,4 @@ If you experience issues with using the library, please file a report in the Git
 
 ## License
 
-Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
-
-This file is licensed under the Apache Software License 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
+Copyright 2019-2021 SAP SE or an SAP affiliate company and odbc-cpp-wrapper contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Please note the GPLv2 Combination Exception for the Apache 2 License! Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/odbc-cpp-wrapper).
