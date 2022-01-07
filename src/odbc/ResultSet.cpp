@@ -1,3 +1,4 @@
+#include <cassert>
 #include <algorithm>
 #include <string>
 #include <utility>
@@ -151,15 +152,15 @@ ULong ResultSet::getULong(unsigned short columnIndex)
 //------------------------------------------------------------------------------
 Decimal ResultSet::getDecimal(unsigned short columnIndex)
 {
-    SQL_NUMERIC_STRUCT num;
+    const int BUF_SIZE = 40;
+    char str[BUF_SIZE];
     SQLLEN ind;
-    EXEC_STMT(SQLGetData, parent_->hstmt_, columnIndex, SQL_C_NUMERIC, &num,
-        sizeof(num), &ind);
+    EXEC_STMT(SQLGetData, parent_->hstmt_, columnIndex, SQL_C_CHAR, &str,
+        sizeof(str), &ind);
     if (ind == SQL_NULL_DATA)
         return Decimal();
-    char str[64];
-    odbc::UtilInternal::numericToString(num, str);
-    return Decimal(decimal(str, num.precision, num.scale));
+    
+    return Decimal(decimal(str));
 }
 //------------------------------------------------------------------------------
 Float ResultSet::getFloat(unsigned short columnIndex)

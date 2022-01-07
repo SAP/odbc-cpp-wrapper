@@ -276,6 +276,13 @@ public:
         std::uint8_t scale = 0);
 
     /**
+     * Constructs a decimal from a given char buffer.
+     * @param value      The value.
+     */
+    decimal(const char * value);
+
+
+    /**
      * Constructs a decimal from a given value applying the given scale.
      *
      * Applying the scale means that the value is divided by 10^scale, e.g. 12
@@ -331,7 +338,7 @@ public:
     std::string toString() const;
 
     /**
-     * Checks whether this number is equal to another number.
+     * Convert.
      *
      * Only the scaled values are considered by the comparison. Hence, numbers
      * that have different scale and precisions can still be considered equal.
@@ -411,7 +418,7 @@ private:
     std::uint8_t scale_;
 };
 //------------------------------------------------------------------------------
-std::ostream& operator<<(std::ostream& out, const decimal& d);
+ODBC_EXPORT std::ostream& operator <<(std::ostream& out, const decimal& d);
 //------------------------------------------------------------------------------
 /**
  * Represents a date consisting of year, month and day in month.
@@ -528,7 +535,7 @@ private:
     std::uint8_t day_;
 };
 //------------------------------------------------------------------------------
-std::ostream& operator<<(std::ostream& out, const date& d);
+ODBC_EXPORT std::ostream& operator<<(std::ostream& out, const date& d);
 //------------------------------------------------------------------------------
 /**
  * Represents a time consisting of hour, minute and second.
@@ -641,7 +648,7 @@ private:
     std::uint8_t second_;
 };
 //------------------------------------------------------------------------------
-std::ostream& operator<<(std::ostream& out, const time& t);
+ODBC_EXPORT std::ostream& operator<<(std::ostream& out, const time& t);
 //------------------------------------------------------------------------------
 /**
  * Represents a timestamp consisting of year, month, day in month, hour, minute,
@@ -743,7 +750,7 @@ private:
     std::uint16_t milliseconds_;
 };
 //------------------------------------------------------------------------------
-std::ostream& operator<<(std::ostream& out, const timestamp& ts);
+ODBC_EXPORT std::ostream& operator<<(std::ostream& out, const timestamp& ts);
 //------------------------------------------------------------------------------
 /**
  * Wrapper class for types that don't have a dedicated NULL value.
