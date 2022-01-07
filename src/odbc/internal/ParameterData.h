@@ -43,7 +43,7 @@ public:
     /**
      * Creates an uninitialized instance.
      */
-    ParameterData();
+    ParameterData() noexcept;
 
     ParameterData(const ParameterData& other) = delete;
 
@@ -53,7 +53,7 @@ public:
      *
      * @param other  Another instance.
      */
-    ParameterData(ParameterData&& other);
+    ParameterData(ParameterData&& other) noexcept;
 
     /**
      * Destructor.
@@ -68,7 +68,7 @@ public:
      * @param other  Another instance.
      * @return       Returns a reference to this instance.
      */
-    ParameterData& operator=(ParameterData&& other);
+    ParameterData& operator=(ParameterData&& other) noexcept;
 
 public:
     /**

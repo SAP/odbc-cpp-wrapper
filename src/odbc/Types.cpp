@@ -28,6 +28,36 @@ decimal::decimal(
     : decimal(value.c_str(), precision, scale)
 {
 }
+
+decimal::decimal(const char* str)
+{
+    const int BUF_SIZE = 40;
+
+    scale_ = 0;
+    bool pointFound = false;
+    std::uint8_t idx = 0;
+    for (; idx < BUF_SIZE && str[idx] != '\0'; ++idx)
+    {
+        if (pointFound)
+        {
+            value_.push_back(str[idx]);
+            ++scale_;
+        }
+        else
+        {
+            if (str[idx] == '.')
+            {
+                pointFound = true;
+            }
+            else {
+                value_.push_back(str[idx]);
+            }
+        }
+    }
+    ODBC_CHECK(idx <= BUF_SIZE, "input sting is too long, precision value must lie within [1,38]");
+    precision_ = (uint8_t)value_.size();
+}
+
 //------------------------------------------------------------------------------
 decimal::decimal(const char* value, std::uint8_t precision, std::uint8_t scale)
     : precision_(precision), scale_(scale)
@@ -224,7 +254,7 @@ int decimal::cmp(const decimal& other) const
     return 0;
 }
 //------------------------------------------------------------------------------
-ostream& operator<<(ostream& out, const decimal& d)
+ODBC_EXPORT ostream& operator<<(ostream& out, const decimal& d)
 {
     out << d.toString();
     return out;
@@ -326,7 +356,7 @@ int date::daysInFebruary(int year)
     return 28;
 }
 //------------------------------------------------------------------------------
-ostream& operator<<(ostream& out, const date& d)
+ODBC_EXPORT ostream& operator<<(ostream& out, const date& d)
 {
     out << d.toString();
     return out;
@@ -393,7 +423,7 @@ bool time::operator>=(const time& other) const
     return !(*this < other);
 }
 //------------------------------------------------------------------------------
-ostream& operator<<(ostream& out, const time& t)
+ODBC_EXPORT ostream& operator<<(ostream& out, const time& t)
 {
     out << t.toString();
     return out;
@@ -458,7 +488,7 @@ bool timestamp::operator>=(const timestamp& other) const
     return !(*this < other);
 }
 //------------------------------------------------------------------------------
-ostream& operator<<(ostream& out, const timestamp& ts)
+ODBC_EXPORT ostream& operator<<(ostream& out, const timestamp& ts)
 {
     out << ts.toString();
     return out;

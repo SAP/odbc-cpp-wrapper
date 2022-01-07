@@ -109,16 +109,12 @@ void PreparedStatement::setDecimal(unsigned short paramIndex,
 {
     if (value.isNull())
     {
-        parameterData_[paramIndex - 1].setNull(TypeToOdbc<decimal>::VALUETYPE);
+        parameterData_[paramIndex - 1].setNull(SQL_C_CHAR);
     }
     else
     {
-        SQL_NUMERIC_STRUCT ns;
-        UtilInternal::decimalToNumeric(*value, ns);
-        ParameterData& pd = parameterData_[paramIndex - 1];
-        pd.setValue(TypeToOdbc<decimal>::VALUETYPE, &ns, sizeof(ns));
-        pd.setColumnSize(ns.precision);
-        pd.setDecimalDigits(ns.scale);
+        std::string val = (*value).toString();
+        parameterData_[paramIndex - 1].setValue(SQL_C_CHAR, val.c_str(), val.size());
     }
 }
 //------------------------------------------------------------------------------
@@ -354,20 +350,26 @@ void PreparedStatement::bindParameters()
     verifyAllParametersValid();
     for (size_t i = 1; i <= parameterData_.size(); ++i)
     {
+        SQLSMALLINT dataType;
+        SQLULEN parameterSize;
+        SQLSMALLINT decimalDigits;
+        SQLSMALLINT nullable;
+        EXEC_STMT(SQLDescribeParam, hstmt_, (SQLUSMALLINT)i, &dataType,
+            &parameterSize, &decimalDigits, &nullable);
+
         const ParameterData& pd = parameterData_[i - 1];
         if (pd.isNull())
         {
             EXEC_STMT(SQLBindParameter, hstmt_, (SQLUSMALLINT)i,
                 SQL_PARAM_INPUT, pd.getValueType(),
-                TypeInfo::getParamTypeForValueType(pd.getValueType()),
+                dataType,
                 0, 0, 0, 0, (SQLLEN*)pd.getLenIndPtr());
         }
         else
         {
             EXEC_STMT(SQLBindParameter, hstmt_, (SQLUSMALLINT)i,
                 SQL_PARAM_INPUT, pd.getValueType(),
-                TypeInfo::getParamTypeForValueType(pd.getValueType()),
-                pd.getColumnSize(), pd.getDecimalDigits(),
+                dataType, parameterSize, decimalDigits,
                 (SQLPOINTER)pd.getData(), pd.getSize(),
                 (SQLLEN*)pd.getLenIndPtr());
         }
