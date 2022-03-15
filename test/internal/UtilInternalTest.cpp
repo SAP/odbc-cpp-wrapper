@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 namespace tests {
 //------------------------------------------------------------------------------
 struct NumericTestParams
@@ -78,4 +78,4 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::ValuesIn(numericTestParams));
 //------------------------------------------------------------------------------
 } // namespace tests
-} // namespace odbc
+NS_ODBC_END
