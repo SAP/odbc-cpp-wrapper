@@ -7,7 +7,7 @@
 using namespace std;
 using testing::Types;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 namespace tests {
 //------------------------------------------------------------------------------
 TEST(TypesTest, decimal)
@@ -342,4 +342,4 @@ TEST(TypesTest, Nullable)
 }
 //------------------------------------------------------------------------------
 } // namespace tests
-} // namespace odbc
+NS_ODBC_END

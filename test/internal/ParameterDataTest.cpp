@@ -1,3 +1,4 @@
+#include <odbc/Config.h>
 #include <odbc/internal/Odbc.h>
 #include <odbc/internal/ParameterData.h>
 #include <GoogleTest.h>
@@ -9,7 +10,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 namespace tests {
 //------------------------------------------------------------------------------
 template<typename CharT, int N>
@@ -277,4 +278,4 @@ TEST(ParameterDataTest, testMoveAssignmentHeapHeap)
 }
 //------------------------------------------------------------------------------
 } // namespace tests
-} // namespace odbc
+NS_ODBC_END
