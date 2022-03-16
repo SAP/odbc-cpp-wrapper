@@ -81,7 +81,7 @@ https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html for detai
 
 - Create a build directory and change to it:
     ```
-    mkdir odbc-cpp-wrapper\build && cd odbc-cpp-wrapper\build
+    mkdir odbc-cpp-wrapper/build && cd odbc-cpp-wrapper/build
     ```
 
 #### Visual Studio 2015 and later
