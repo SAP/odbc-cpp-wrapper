@@ -158,7 +158,7 @@ Decimal ResultSet::getDecimal(unsigned short columnIndex)
     if (ind == SQL_NULL_DATA)
         return Decimal();
     char str[64];
-    odbc::UtilInternal::numericToString(num, str);
+    UtilInternal::numericToString(num, str);
     return Decimal(decimal(str, num.precision, num.scale));
 }
 //------------------------------------------------------------------------------

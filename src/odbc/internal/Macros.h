@@ -34,7 +34,7 @@
         if (!(condition)) {                                                    \
             ::std::ostringstream out;                                          \
             out << msg;                                                        \
-            throw ::odbc::Exception(out.str());                                \
+            throw ::NS_ODBC::Exception(out.str());                             \
         }                                                                      \
     } while (false)
 //------------------------------------------------------------------------------
