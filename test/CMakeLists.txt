@@ -3,6 +3,7 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src)
 
 SET(OdbcCppTest_sources
     EnvironmentTest.cpp
+    StringConverterTest.cpp
     TestMain.cpp
     TypesTest.cpp
     internal/ParameterDataTest.cpp

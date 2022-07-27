@@ -17,6 +17,7 @@ SET(public_headers
     ResultSetMetaDataUnicode.h
     Statement.h
     StatementBase.h
+    StringConverter.h
     Types.h
     Util.h
 )
@@ -38,6 +39,7 @@ SET(odbccpp_sources
     ResultSetMetaDataUnicode.cpp
     Statement.cpp
     StatementBase.cpp
+    StringConverter.cpp
     Types.cpp
     Util.cpp
     internal/Batch.cpp

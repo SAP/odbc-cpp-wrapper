@@ -20,6 +20,8 @@ class ResultSetMetaDataBase;
 class ResultSetMetaDataUnicode;
 class StatementBase;
 class Statement;
+template<bool BigEndian>
+class StringConverter;
 class ValueBuffer;
 //------------------------------------------------------------------------------
 typedef Reference<Connection> ConnectionRef;
