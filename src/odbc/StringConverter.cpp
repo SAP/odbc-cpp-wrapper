@@ -1,108 +1,70 @@
 #include <odbc/Exception.h>
 #include <odbc/StringConverter.h>
+#include <odbc/internal/Macros.h>
 #include <odbc/internal/charset/Utf16.h>
 #include <odbc/internal/charset/Utf8.h>
+#if defined(__GLIBC__)
+#include <endian.h>
+#elif defined(__APPLE__)
+#include <machine/endian.h>
+#endif
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
 NS_ODBC_START
 //------------------------------------------------------------------------------
+namespace  {
+// TODO(C++20): Replace by std::endian.
+enum class endian
+{
+#ifdef BYTE_ORDER
+    little = LITTLE_ENDIAN,
+    big = BIG_ENDIAN,
+    native = BYTE_ORDER
+#elif defined(_M_IX86) || defined(_M_AMD64)
+    little = 0,
+    big = 1,
+    native = little
+#else
+#error "Cannot determine endianness"
+#endif
+};
+//------------------------------------------------------------------------------
+} // anonymous namespace
+//------------------------------------------------------------------------------
 // StringConverter class
 //------------------------------------------------------------------------------
-template<bool BigEndian>
-void StringConverter<BigEndian>::convert(
-    const char* src,
-    std::size_t srcLength,
-    Encoding srcEnc,
-    char* dst,
-    std::size_t dstLength,
-    Encoding dstEnc)
+u16string StringConverter::utf8ToUtf16(const char* src, size_t srcLength)
 {
-    if (srcEnc == dstEnc)
-        throw Exception("Source and destination encodings are the same");
+    if (src == nullptr)
+        ODBC_FAIL("Input string cannot be nullptr.");
 
-    const char* srcCurr = src;
+    if (srcLength == 0)
+        return u16string();
+
     const char* srcEnd = src + srcLength;
-    const char* dstCurr = dst;
-    const char* dstEnd = dst + dstLength;
+    size_t dstLength = utf8ToUtf16Length(src, srcLength);
+    u16string str(dstLength/sizeof(char16_t), 0);
+    char* dst = reinterpret_cast<char*>(const_cast<char16_t*>(str.data()));
 
-    switch (srcEnc)
+    while (src < srcEnd)
     {
-    case Encoding::UTF8:
-    {
-        while (srcCurr < srcEnd && dstCurr < dstEnd)
-        {
-            pair<int, char32_t> cp = utf8ToCodePoint(srcCurr, srcEnd);
-            srcCurr += cp.first;
+        pair<int, char32_t> cp = utf8ToCodePoint(src, srcEnd);
+        src += cp.first;
+        if (endian::native == endian::big)
+            dst += utf16::encodeBE(cp.second, dst);
+        else
+            dst += utf16::encodeLE(cp.second, dst);
+    }
 
-            switch(dstEnc)
-            {
-            case Encoding::UTF16:
-            {
-                if (BigEndian)
-                    utf16::encodeBE(cp.second, dstCurr);
-                else
-                    utf16::encodeLE(cp.second, dstCurr);
-                dstCurr += utf16::needsSurrogatePair(cp.second) ? 4 : 2;
-            }
-            default:
-                ODBC_ASSERT_UNREACHABLE;
-            }
-        }
-        break;
-    }
-    case Encoding::UTF16:
-    {
-        throw Exception("Encoding not impelemented");
-    }
-    }
+    return str;
 }
 //------------------------------------------------------------------------------
-template<bool BigEndian>
-std::size_t StringConverter<BigEndian>::getLength(
-    const char* src,
-    std::size_t srcLength,
-    Encoding srcEnc,
-    Encoding dstEnc)
-{
-    size_t ret = 0;
-
-    const char* srcCurr = src;
-    const char* srcEnd = src + srcLength;
-
-    switch (srcEnc)
-    {
-    case Encoding::UTF8:
-    {
-        while (srcCurr < srcEnd)
-        {
-            pair<int, char32_t> cp = utf8ToCodePoint(srcCurr, srcEnd);
-            srcCurr += cp.first;
-
-            switch (dstEnc)
-            {
-            case Encoding::UTF16:
-                ret += utf16::needsSurrogatePair(cp.second) ? 4 : 2;
-                break;
-            default:
-                ODBC_ASSERT_UNREACHABLE;
-            }
-        }
-        break;
-    }
-    case Encoding::UTF16:
-    {
-        throw Exception("Encoding not impelemented");
-    }
-    }
-
-    return ret;
-}
-//------------------------------------------------------------------------------
-template<bool BigEndian>
-pair<int, char32_t> StringConverter<BigEndian>::utf8ToCodePoint(
+pair<int, char32_t> StringConverter::utf8ToCodePoint(
     const char* curr, const char* end)
 {
+    ODBC_ASSERT_0(curr != nullptr && end != nullptr);
+
     int len = utf8::getSequenceLength(*curr);
     if (len == 1)
     {
@@ -111,37 +73,38 @@ pair<int, char32_t> StringConverter<BigEndian>::utf8ToCodePoint(
     }
     if (len == -1)
     {
-        throw Exception("A byte-sequence has invalid sequence length.");
+        ODBC_FAIL("The byte-sequence '" <<
+                  string(curr, 1) << "' has invalid length.");
     }
-    if (end)
+
+    // We have to check that we don't exceed the end of the string.
+    if ((curr + len) > end)
     {
-        // If the end of the string is known, we have to check that we don't
-        // exceed the end of the string.
-        if ((curr + len) > end)
-        {
-            throw Exception("There is an incomplete byte-sequence at the end of"
-                " the string.");
-        }
+        ODBC_FAIL("The byte-sequence '" <<
+                  string(curr, end - curr) << "' is incomplete.");
     }
-    else
-    {
-        // If the string is zero-terminated, we have to make sure that the
-        // sequence does not contain a terminating zero.
-        for (int i = 1; i < len; ++i)
-        {
-            if (curr[i] == '\0')
-            {
-                throw Exception("There is an incomplete byte-sequence at the "
-                    "end of the string.");
-            }
-        }
-    }
+
     if (!utf8::isValidSequence(len, curr))
     {
-        throw Exception("There is an incomplete byte-sequence at the end of the"
-            " string.");
+        ODBC_FAIL("The byte-sequence '" <<
+                  string(curr, len) << "' is incomplete.");
     }
     return pair<int, char32_t>(len, utf8::decode(len, curr));
+}
+//------------------------------------------------------------------------------
+size_t StringConverter::utf8ToUtf16Length(const char* src, size_t srcLength)
+{
+    size_t len = 0;
+    const char* srcEnd = src + srcLength;
+
+    while (src < srcEnd)
+    {
+        pair<int, char32_t> cp = utf8ToCodePoint(src, srcEnd);
+        src += cp.first;
+        len += utf16::needsSurrogatePair(cp.second) ? 4 : 2;
+    }
+
+    return len;
 }
 //------------------------------------------------------------------------------
 NS_ODBC_END

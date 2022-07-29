@@ -31,7 +31,7 @@ private:
     friend class ResultSetMetaDataUnicode;
     friend class Statement;
     friend class StatementBase;
-    template<bool> friend class StringConverter;
+    friend class StringConverter;
     friend class time;
     friend class timestamp;
     friend class ValueBuffer;

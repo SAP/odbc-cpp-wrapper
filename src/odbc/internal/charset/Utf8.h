@@ -28,17 +28,6 @@ inline int getSequenceLength(char c)
     return -1;
 }
 //------------------------------------------------------------------------------
-size_t getStringLength(const char* utf8String, size_t len) {
-    const char* curr = utf8String;
-    const char* end = utf8String + len;
-    size_t strLen = 0;
-    while (curr < end) {
-        curr += getSequenceLength(*curr);
-        ++strLen;
-    }
-    return strLen;
-}
-//------------------------------------------------------------------------------
 /**
  * Checks if an UTF-8 sequence is valid.
  *
@@ -132,18 +121,6 @@ inline char32_t decode(int len, const char* c)
         return decode4(c);
     }
     ODBC_ASSERT_UNREACHABLE;
-}
-//------------------------------------------------------------------------------
-/**
- * Checks if a code point is representable in UTF-8, i.e. it is a code-point
- * less or equal to U+10FFFF.
- *
- * @param c  The code point to check.
- * @return   True if the code point is representable in UTF-8, false otherwise.
- */
-inline bool isRepresentable(char32_t c)
-{
-    return c <= 0x10FFFF;
 }
 //------------------------------------------------------------------------------
 } // namespace utf8

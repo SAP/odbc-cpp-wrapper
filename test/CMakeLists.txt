@@ -8,6 +8,8 @@ SET(OdbcCppTest_sources
     TypesTest.cpp
     internal/ParameterDataTest.cpp
     internal/UtilInternalTest.cpp
+    internal/charset/Utf16Test.cpp
+    internal/charset/Utf8Test.cpp
 )
 
 ADD_EXECUTABLE(
