@@ -3,67 +3,67 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/charset/Utf16.h>
 #include <odbc/internal/charset/Utf8.h>
-#if defined(__GLIBC__)
-#include <endian.h>
-#elif defined(__APPLE__)
-#include <machine/endian.h>
-#endif
+#include <cstring>
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
 NS_ODBC_START
 //------------------------------------------------------------------------------
-namespace  {
-// TODO(C++20): Replace by std::endian.
-enum class endian
-{
-#ifdef BYTE_ORDER
-    little = LITTLE_ENDIAN,
-    big = BIG_ENDIAN,
-    native = BYTE_ORDER
-#elif defined(_M_IX86) || defined(_M_AMD64)
-    little = 0,
-    big = 1,
-    native = little
-#else
-#error "Cannot determine endianness"
-#endif
-};
-//------------------------------------------------------------------------------
-} // anonymous namespace
-//------------------------------------------------------------------------------
 // StringConverter class
+//------------------------------------------------------------------------------
+u16string StringConverter::utf8ToUtf16(const char* src)
+{
+    return utf8ToUtf16(src, nullptr);
+}
 //------------------------------------------------------------------------------
 u16string StringConverter::utf8ToUtf16(const char* src, size_t srcLength)
 {
-    if (src == nullptr)
-        ODBC_FAIL("Input string cannot be nullptr.");
+    return utf8ToUtf16(src, src + srcLength);
+}
+//------------------------------------------------------------------------------
+u16string StringConverter::utf8ToUtf16(const char* begin, const char* end)
+{
+    ODBC_CHECK(begin != nullptr, "Input string must not be nullptr.");
 
-    if (srcLength == 0)
-        return u16string();
+    if (end == nullptr)
+        end = begin + strlen(begin);
 
-    const char* srcEnd = src + srcLength;
-    size_t dstLength = utf8ToUtf16Length(src, srcLength);
-    u16string str(dstLength/sizeof(char16_t), 0);
-    char* dst = reinterpret_cast<char*>(const_cast<char16_t*>(str.data()));
+    size_t dstLength = utf8ToUtf16Length(begin, end);
+    u16string str(dstLength, 0);
 
-    while (src < srcEnd)
+    const char* curr = begin;
+    size_t i = 0;
+
+    while (curr < end)
     {
-        pair<int, char32_t> cp = utf8ToCodePoint(src, srcEnd);
-        src += cp.first;
-        if (endian::native == endian::big)
-            dst += utf16::encodeBE(cp.second, dst);
+        pair<int, char32_t> cp = utf8ToCodePoint(begin, curr, end);
+        curr += cp.first;
+
+        ODBC_CHECK(utf16::isRepresentable(cp.second),
+                   "Codepoint " << (uint32_t)cp.second << " is invalid");
+
+        if (utf16::needsSurrogatePair(cp.second))
+        {
+            pair<char16_t, char16_t> sp = utf16::encodeSurrogatePair(cp.second);
+            str[i] = static_cast<char16_t>(sp.first);
+            str[i + 1] = static_cast<char16_t>(sp.second);
+            i += 2;
+        }
         else
-            dst += utf16::encodeLE(cp.second, dst);
+        {
+            str[i] = static_cast<char16_t>(cp.second);
+            ++i;
+        }
     }
 
     return str;
 }
 //------------------------------------------------------------------------------
 pair<int, char32_t> StringConverter::utf8ToCodePoint(
-    const char* curr, const char* end)
+    const char* begin, const char* curr, const char* end)
 {
-    ODBC_ASSERT_0(curr != nullptr && end != nullptr);
+    ODBC_ASSERT_0(begin != nullptr && end != nullptr);
+    ODBC_ASSERT_0(begin <= curr && curr < end);
 
     int len = utf8::getSequenceLength(*curr);
     if (len == 1)
@@ -73,35 +73,32 @@ pair<int, char32_t> StringConverter::utf8ToCodePoint(
     }
     if (len == -1)
     {
-        ODBC_FAIL("The byte-sequence '" <<
-                  string(curr, 1) << "' has invalid length.");
+        ODBC_FAIL("The string contains an invalid UTF-8 byte sequence at "
+                  "position " << (curr - begin) << ".");
     }
 
-    // We have to check that we don't exceed the end of the string.
-    if ((curr + len) > end)
+    // We have to make sure that the sequence does not contain a terminating
+    // zero and the following byte-sequence is valid.
+    if ((curr + len) > end || !utf8::isValidSequence(len, curr))
     {
-        ODBC_FAIL("The byte-sequence '" <<
-                  string(curr, end - curr) << "' is incomplete.");
-    }
-
-    if (!utf8::isValidSequence(len, curr))
-    {
-        ODBC_FAIL("The byte-sequence '" <<
-                  string(curr, len) << "' is incomplete.");
+        ODBC_FAIL("The string contains an incomplete byte-sequence at "
+                  "position " << (curr - begin) << ".");
     }
     return pair<int, char32_t>(len, utf8::decode(len, curr));
 }
 //------------------------------------------------------------------------------
-size_t StringConverter::utf8ToUtf16Length(const char* src, size_t srcLength)
+size_t StringConverter::utf8ToUtf16Length(const char* begin, const char* end)
 {
-    size_t len = 0;
-    const char* srcEnd = src + srcLength;
+    ODBC_ASSERT_0(begin != nullptr && end != nullptr);
 
-    while (src < srcEnd)
+    size_t len = 0;
+
+    const char* curr = begin;
+    while (curr < end)
     {
-        pair<int, char32_t> cp = utf8ToCodePoint(src, srcEnd);
-        src += cp.first;
-        len += utf16::needsSurrogatePair(cp.second) ? 4 : 2;
+        pair<int, char32_t> cp = utf8ToCodePoint(begin, curr, end);
+        curr += cp.first;
+        len += utf16::needsSurrogatePair(cp.second) ? 2 : 1;
     }
 
     return len;
