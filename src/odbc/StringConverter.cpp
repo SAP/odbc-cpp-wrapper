@@ -3,7 +3,9 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/charset/Utf16.h>
 #include <odbc/internal/charset/Utf8.h>
+#include <cassert>
 #include <cstring>
+#include <sstream>
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
@@ -13,26 +15,28 @@ NS_ODBC_START
 //------------------------------------------------------------------------------
 u16string StringConverter::utf8ToUtf16(const char* src)
 {
+    ODBC_CHECK(src != nullptr, "Input string must not be nullptr.");
     return utf8ToUtf16(src, nullptr);
 }
 //------------------------------------------------------------------------------
 u16string StringConverter::utf8ToUtf16(const char* src, size_t srcLength)
 {
+    ODBC_CHECK(src != nullptr, "Input string must not be nullptr.");
     return utf8ToUtf16(src, src + srcLength);
 }
 //------------------------------------------------------------------------------
 u16string StringConverter::utf8ToUtf16(const char* begin, const char* end)
 {
-    ODBC_CHECK(begin != nullptr, "Input string must not be nullptr.");
+    assert(begin != nullptr);
 
     if (end == nullptr)
         end = begin + strlen(begin);
 
-    size_t dstLength = utf8ToUtf16Length(begin, end);
-    u16string str(dstLength, 0);
+    size_t len = utf8ToUtf16Length(begin, end);
+    u16string str;
+    str.reserve(len);
 
     const char* curr = begin;
-    size_t i = 0;
 
     while (curr < end)
     {
@@ -40,19 +44,19 @@ u16string StringConverter::utf8ToUtf16(const char* begin, const char* end)
         curr += cp.first;
 
         ODBC_CHECK(utf16::isRepresentable(cp.second),
-                   "Codepoint " << (uint32_t)cp.second << " is invalid");
+                   "The UTF-8 string contains codepoint U+" <<
+                   std::hex << (uint32_t)cp.second <<
+                   ", which cannot be represented in UTF-16.");
 
         if (utf16::needsSurrogatePair(cp.second))
         {
             pair<char16_t, char16_t> sp = utf16::encodeSurrogatePair(cp.second);
-            str[i] = static_cast<char16_t>(sp.first);
-            str[i + 1] = static_cast<char16_t>(sp.second);
-            i += 2;
+            str.push_back(sp.first);
+            str.push_back(sp.second);
         }
         else
         {
-            str[i] = static_cast<char16_t>(cp.second);
-            ++i;
+            str.push_back(cp.second);
         }
     }
 
@@ -62,8 +66,8 @@ u16string StringConverter::utf8ToUtf16(const char* begin, const char* end)
 pair<int, char32_t> StringConverter::utf8ToCodePoint(
     const char* begin, const char* curr, const char* end)
 {
-    ODBC_ASSERT_0(begin != nullptr && end != nullptr);
-    ODBC_ASSERT_0(begin <= curr && curr < end);
+    assert(begin != nullptr && end != nullptr);
+    assert(begin <= curr && curr < end);
 
     int len = utf8::getSequenceLength(*curr);
     if (len == 1)
@@ -77,11 +81,11 @@ pair<int, char32_t> StringConverter::utf8ToCodePoint(
                   "position " << (curr - begin) << ".");
     }
 
-    // We have to make sure that the sequence does not contain a terminating
-    // zero and the following byte-sequence is valid.
+    // We have to make sure that we don't exceed the end of the string and
+    // the following byte sequence is valid.
     if ((curr + len) > end || !utf8::isValidSequence(len, curr))
     {
-        ODBC_FAIL("The string contains an incomplete byte-sequence at "
+        ODBC_FAIL("The string contains an incomplete byte sequence at "
                   "position " << (curr - begin) << ".");
     }
     return pair<int, char32_t>(len, utf8::decode(len, curr));
@@ -89,7 +93,7 @@ pair<int, char32_t> StringConverter::utf8ToCodePoint(
 //------------------------------------------------------------------------------
 size_t StringConverter::utf8ToUtf16Length(const char* begin, const char* end)
 {
-    ODBC_ASSERT_0(begin != nullptr && end != nullptr);
+    assert(begin != nullptr && end != nullptr);
 
     size_t len = 0;
 
@@ -98,6 +102,12 @@ size_t StringConverter::utf8ToUtf16Length(const char* begin, const char* end)
     {
         pair<int, char32_t> cp = utf8ToCodePoint(begin, curr, end);
         curr += cp.first;
+
+        ODBC_CHECK(utf16::isRepresentable(cp.second),
+                   "The UTF-8 string contains codepoint U+" <<
+                   std::hex << (uint32_t)cp.second <<
+                   ", which cannot be represented in UTF-16.");
+
         len += utf16::needsSurrogatePair(cp.second) ? 2 : 1;
     }
 

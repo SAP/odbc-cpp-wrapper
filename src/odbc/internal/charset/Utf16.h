@@ -1,9 +1,9 @@
 #ifndef ODBC_INTERNAL_CHARSET_UTF16_H_INCLUDED
 #define ODBC_INTERNAL_CHARSET_UTF16_H_INCLUDED
 //------------------------------------------------------------------------------
+#include <cassert>
 #include <utility>
 #include <odbc/Config.h>
-#include <odbc/internal/Macros.h>
 //------------------------------------------------------------------------------
 NS_ODBC_START
 //------------------------------------------------------------------------------
@@ -42,9 +42,7 @@ inline bool needsSurrogatePair(char32_t c)
  */
 inline std::pair<char16_t, char16_t> encodeSurrogatePair(char32_t c)
 {
-    ODBC_ASSERT(
-        (c >= 0x10000) && (c <= 0x10FFFF),
-        "Codepoint " << (uint32_t)c << " is not from the supplementary planes");
+    assert((c >= 0x10000) && (c <= 0x10FFFF));
     c -= 0x10000;
     return std::pair<char16_t, char16_t>{
         (char16_t)(0xD800 | (c >> 10)), (char16_t)(0xDC00 | (c & 0x3FF))};

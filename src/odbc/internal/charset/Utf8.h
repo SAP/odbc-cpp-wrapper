@@ -1,6 +1,7 @@
 #ifndef ODBC_INTERNAL_CHARSET_UTF8_H_INCLUDED
 #define ODBC_INTERNAL_CHARSET_UTF8_H_INCLUDED
 //------------------------------------------------------------------------------
+#include <cassert>
 #include <odbc/Config.h>
 #include <odbc/internal/Macros.h>
 //------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ inline bool isValidSequence(int len, const char* c)
         return ((c[0] & 0xF8) == 0xF0) && ((c[1] & 0xC0) == 0x80)
                && ((c[2] & 0xC0) == 0x80) && ((c[3] & 0xC0) == 0x80);
     }
-    ODBC_ASSERT_UNREACHABLE;
+    assert(false);
 }
 //------------------------------------------------------------------------------
 /**
@@ -62,7 +63,7 @@ inline bool isValidSequence(int len, const char* c)
  */
 inline char32_t decode2(const char* c)
 {
-    ODBC_ASSERT_0(isValidSequence(2, c));
+    assert(isValidSequence(2, c));
     char32_t b1 = (char32_t)(unsigned char)(c[0]);
     char32_t b2 = (char32_t)(unsigned char)(c[1]);
     return ((b1 & 0x1F) << 6) | (b2 & 0x3F);
@@ -76,7 +77,7 @@ inline char32_t decode2(const char* c)
  */
 inline char32_t decode3(const char* c)
 {
-    ODBC_ASSERT_0(isValidSequence(3, c));
+    assert(isValidSequence(3, c));
     char32_t b1 = (char32_t)(unsigned char)(c[0]);
     char32_t b2 = (char32_t)(unsigned char)(c[1]);
     char32_t b3 = (char32_t)(unsigned char)(c[2]);
@@ -91,7 +92,7 @@ inline char32_t decode3(const char* c)
  */
 inline char32_t decode4(const char* c)
 {
-    ODBC_ASSERT_0(isValidSequence(4, c));
+    assert(isValidSequence(4, c));
     char32_t b1 = (char32_t)(unsigned char)(c[0]);
     char32_t b2 = (char32_t)(unsigned char)(c[1]);
     char32_t b3 = (char32_t)(unsigned char)(c[2]);
@@ -120,7 +121,7 @@ inline char32_t decode(int len, const char* c)
     case 4:
         return decode4(c);
     }
-    ODBC_ASSERT_UNREACHABLE;
+    assert(false);
 }
 //------------------------------------------------------------------------------
 } // namespace utf8

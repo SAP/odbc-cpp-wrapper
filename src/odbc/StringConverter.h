@@ -14,7 +14,7 @@ public:
     StringConverter() = delete;
 
     /**
-     * Converts a null-terminated UTF-8 string to a UTF16 string.
+     * Converts a null-terminated UTF-8 string to a UTF-16 string.
      *
      * @param src  The null-terminated UTF-8 string to be converted.
      * @return     The resulting UTF-16 string.

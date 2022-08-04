@@ -26,9 +26,7 @@ TEST_P(StringConverterTest, utf8ToUtf16)
     u16string actual = p.srcLength >= 0 ?
                 StringConverter::utf8ToUtf16(p.src, p.srcLength) :
                 StringConverter::utf8ToUtf16(p.src);
-    ASSERT_EQ(p.expected.length(), actual.length());
-    for (size_t i = 0; i < p.expected.length(); ++i)
-        EXPECT_EQ(p.expected[i], actual[i]);
+    ASSERT_EQ(p.expected, actual);
 }
 //------------------------------------------------------------------------------
 // clang-format off
@@ -142,12 +140,12 @@ static const StringConverterThrowTestParams stringConverterThrowTestParams[] = {
 {
     "\xC2\xA2\xE2\x82\xAC\xF0\x90\x8D",
     8,
-    "The string contains an incomplete byte-sequence at position 5."
+    "The string contains an incomplete byte sequence at position 5."
 },
 {
     "\x73\x74\xE5\x5D\x0D\x0A",
     6,
-    "The string contains an incomplete byte-sequence at position 2."
+    "The string contains an incomplete byte sequence at position 2."
 },
 };
 // clang-format on
