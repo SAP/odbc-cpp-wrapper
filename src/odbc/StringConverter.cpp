@@ -43,10 +43,7 @@ u16string StringConverter::utf8ToUtf16(const char* begin, const char* end)
         pair<int, char32_t> cp = utf8ToCodePoint(begin, curr, end);
         curr += cp.first;
 
-        ODBC_CHECK(utf16::isRepresentable(cp.second),
-                   "The UTF-8 string contains codepoint U+" <<
-                   std::hex << (uint32_t)cp.second <<
-                   ", which cannot be represented in UTF-16.");
+        assert(utf16::isRepresentable(cp.second));
 
         if (utf16::needsSurrogatePair(cp.second))
         {
@@ -81,13 +78,19 @@ pair<int, char32_t> StringConverter::utf8ToCodePoint(
                   "position " << (curr - begin) << ".");
     }
 
-    // We have to make sure that we don't exceed the end of the string and
-    // the following byte sequence is valid.
-    if ((curr + len) > end || !utf8::isValidSequence(len, curr))
+    // We have to make sure that we don't exceed the end of the string.
+    if ((curr + len) > end)
     {
-        ODBC_FAIL("The string contains an incomplete byte sequence at "
+        ODBC_FAIL("The string contains an incomplete UTF-8 byte sequence at "
                   "position " << (curr - begin) << ".");
     }
+
+    if (!utf8::isValidSequence(len, curr))
+    {
+        ODBC_FAIL("The string contains an invalid UTF-8 byte sequence at "
+                  "position " << (curr - begin) << ".");
+    }
+
     return pair<int, char32_t>(len, utf8::decode(len, curr));
 }
 //------------------------------------------------------------------------------

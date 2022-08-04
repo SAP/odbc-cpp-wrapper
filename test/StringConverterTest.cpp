@@ -140,12 +140,12 @@ static const StringConverterThrowTestParams stringConverterThrowTestParams[] = {
 {
     "\xC2\xA2\xE2\x82\xAC\xF0\x90\x8D",
     8,
-    "The string contains an incomplete byte sequence at position 5."
+    "The string contains an incomplete UTF-8 byte sequence at position 5."
 },
 {
     "\x73\x74\xE5\x5D\x0D\x0A",
     6,
-    "The string contains an incomplete byte sequence at position 2."
+    "The string contains an invalid UTF-8 byte sequence at position 2."
 },
 };
 // clang-format on
