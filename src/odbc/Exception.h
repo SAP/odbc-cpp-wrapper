@@ -31,6 +31,7 @@ private:
     friend class ResultSetMetaDataUnicode;
     friend class Statement;
     friend class StatementBase;
+    friend class StringConverter;
     friend class time;
     friend class timestamp;
     friend class ValueBuffer;
