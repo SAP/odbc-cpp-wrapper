@@ -53,7 +53,7 @@ u16string StringConverter::utf8ToUtf16(const char* begin, const char* end)
         }
         else
         {
-            str.push_back(cp.second);
+            str.push_back(static_cast<char16_t>(cp.second));
         }
     }
 

@@ -52,7 +52,7 @@ inline bool isValidSequence(int len, const char* c)
         return ((c[0] & 0xF8) == 0xF0) && ((c[1] & 0xC0) == 0x80)
                && ((c[2] & 0xC0) == 0x80) && ((c[3] & 0xC0) == 0x80);
     }
-    assert(false);
+    ODBC_UNREACHABLE;
 }
 //------------------------------------------------------------------------------
 /**
@@ -121,7 +121,7 @@ inline char32_t decode(int len, const char* c)
     case 4:
         return decode4(c);
     }
-    assert(false);
+    ODBC_UNREACHABLE;
 }
 //------------------------------------------------------------------------------
 } // namespace utf8
