@@ -56,6 +56,12 @@ TARGET_COMPILE_DEFINITIONS(odbccpp_static
     PUBLIC
         ODBC_STATIC
 )
+
+target_include_directories(odbccpp_static
+    PUBLIC
+        ${ODBC_INCLUDE_DIR}
+)
+
 SET_PROPERTY(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # Shared library
@@ -71,6 +77,11 @@ TARGET_COMPILE_DEFINITIONS(odbccpp
 TARGET_LINK_LIBRARIES(odbccpp
     PUBLIC
         ${ODBC_LIBRARIES}
+)
+
+target_include_directories(odbccpp
+    PUBLIC
+        ${ODBC_INCLUDE_DIR}
 )
 
 SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
