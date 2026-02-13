@@ -57,7 +57,7 @@ TARGET_COMPILE_DEFINITIONS(odbccpp_static
         ODBC_STATIC
 )
 
-target_include_directories(odbccpp_static
+TARGET_INCLUDE_DIRECTORIES(odbccpp_static
     PUBLIC
         ${ODBC_INCLUDE_DIR}
 )
@@ -79,7 +79,7 @@ TARGET_LINK_LIBRARIES(odbccpp
         ${ODBC_LIBRARIES}
 )
 
-target_include_directories(odbccpp
+TARGET_INCLUDE_DIRECTORIES(odbccpp
     PUBLIC
         ${ODBC_INCLUDE_DIR}
 )
