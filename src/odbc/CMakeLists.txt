@@ -59,7 +59,7 @@ TARGET_COMPILE_DEFINITIONS(odbccpp_static
 
 TARGET_LINK_LIBRARIES(odbccpp_static
     PUBLIC
-        ODBC::ODBC
+        ${ODBC_TARGET}
 )
 
 SET_PROPERTY(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -82,6 +82,6 @@ TARGET_LINK_LIBRARIES(odbccpp
 SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
 
 # Installation
-INSTALL(TARGETS odbccpp_static DESTINATION lib)
-INSTALL(TARGETS odbccpp DESTINATION lib)
+INSTALL(TARGETS odbccpp_static)
+INSTALL(TARGETS odbccpp)
 INSTALL(FILES ${public_headers} DESTINATION include/odbc)
