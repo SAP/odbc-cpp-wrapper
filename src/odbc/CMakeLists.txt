@@ -82,6 +82,4 @@ TARGET_LINK_LIBRARIES(odbccpp
 SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
 
 # Installation
-INSTALL(TARGETS odbccpp_static DESTINATION lib)
-INSTALL(TARGETS odbccpp DESTINATION lib)
 INSTALL(FILES ${public_headers} DESTINATION include/odbc)
