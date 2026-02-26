@@ -1,0 +1,22 @@
+diff --git a/src/odbc/CMakeLists.txt b/src/odbc/CMakeLists.txt
+index f181501..2990f73 100644
+--- a/src/odbc/CMakeLists.txt
++++ b/src/odbc/CMakeLists.txt
+@@ -59,7 +59,7 @@ TARGET_COMPILE_DEFINITIONS(odbccpp_static
+ 
+ TARGET_LINK_LIBRARIES(odbccpp_static
+     PUBLIC
+-        ODBC::ODBC
++        ${ODBC_TARGET}
+ )
+ 
+ SET_PROPERTY(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
+@@ -76,7 +76,7 @@ TARGET_COMPILE_DEFINITIONS(odbccpp
+ 
+ TARGET_LINK_LIBRARIES(odbccpp
+     PUBLIC
+-        ODBC::ODBC
++        ${ODBC_TARGET}
+ )
+ 
+ SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
