@@ -47,41 +47,28 @@ SET(odbccpp_sources
     internal/UtilInternal.cpp
 )
 
-# Static library
-ADD_LIBRARY(odbccpp_static
-    STATIC
-        ${odbccpp_sources}
-)
-TARGET_COMPILE_DEFINITIONS(odbccpp_static
-    PUBLIC
-        ODBC_STATIC
-)
-
-TARGET_LINK_LIBRARIES(odbccpp_static
-    PUBLIC
-        ODBC::ODBC
-)
-
-SET_PROPERTY(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-# Shared library
-ADD_LIBRARY(odbccpp
-    SHARED
-        ${odbccpp_sources}
-)
-TARGET_COMPILE_DEFINITIONS(odbccpp
-    PRIVATE
-        ODBC_EXPORTS
-)
+ADD_LIBRARY(odbccpp ${odbccpp_sources})
 
 TARGET_LINK_LIBRARIES(odbccpp
     PUBLIC
         ODBC::ODBC
 )
 
+IF(BUILD_SHARED_LIBS)
+    TARGET_COMPILE_DEFINITIONS(odbccpp
+        PRIVATE
+            ODBC_EXPORTS
+    )
+ELSE()
+    TARGET_COMPILE_DEFINITIONS(odbccpp
+        PUBLIC
+            ODBC_STATIC
+    )
+    SET_PROPERTY(TARGET odbccpp PROPERTY POSITION_INDEPENDENT_CODE ON)
+ENDIF()
+
 SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
 
 # Installation
-INSTALL(TARGETS odbccpp_static)
 INSTALL(TARGETS odbccpp)
 INSTALL(FILES ${public_headers} DESTINATION include/odbc)

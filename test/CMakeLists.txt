@@ -19,14 +19,8 @@ ADD_EXECUTABLE(
 
 TARGET_LINK_LIBRARIES(
     OdbcCppTest
-    odbccpp_static
+    odbccpp
     GTest::GTest
-    ${ODBC_LIBRARIES}
-)
-
-TARGET_COMPILE_DEFINITIONS(OdbcCppTest
-    PUBLIC
-        ODBC_STATIC
 )
 
 ADD_TEST(AllTests OdbcCppTest)
