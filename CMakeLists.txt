@@ -4,6 +4,9 @@ SET(CMAKE_CXX_STANDARD 11)
 
 PROJECT(odbccpp)
 
+INCLUDE(GNUInstallDirs)
+INCLUDE(CMakePackageConfigHelpers)
+
 FIND_PACKAGE(ODBC REQUIRED)
 FIND_PACKAGE(Doxygen)
 FIND_PACKAGE(GTest)
@@ -19,3 +22,14 @@ ENDIF()
 IF (DOXYGEN_FOUND)
     ADD_SUBDIRECTORY(doc)
 ENDIF()
+
+CONFIGURE_PACKAGE_CONFIG_FILE(
+    cmake/odbccppConfig.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/odbccppConfig.cmake"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/odbccpp"
+)
+
+INSTALL(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/odbccppConfig.cmake"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/odbccpp"
+)
