@@ -49,6 +49,12 @@ SET(odbccpp_sources
 
 ADD_LIBRARY(odbccpp ${odbccpp_sources})
 
+TARGET_INCLUDE_DIRECTORIES(odbccpp
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
 TARGET_LINK_LIBRARIES(odbccpp
     PUBLIC
         ODBC::ODBC
@@ -69,6 +75,18 @@ ENDIF()
 
 SET_PROPERTY(TARGET odbccpp PROPERTY public_headers ${public_headers})
 
-# Installation
-INSTALL(TARGETS odbccpp)
-INSTALL(FILES ${public_headers} DESTINATION include/odbc)
+INSTALL(TARGETS odbccpp
+    EXPORT odbccppTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+INSTALL(FILES ${public_headers}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/odbc
+)
+
+INSTALL(EXPORT odbccppTargets
+    FILE odbccppTargets.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/odbccpp
+)
